@@ -49,6 +49,31 @@ exports.login = async (req, res) => {
   }
 };
 
+const crypto = require('crypto');
+
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: 'User not found' });
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Generate secure session token
+    const token = crypto.randomBytes(32).toString('hex');
+    user.sessionToken = token;
+    await user.save();
+
+    // Return token to frontend
+    res.json({ sessionToken: token });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 exports.getDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select('-password');
