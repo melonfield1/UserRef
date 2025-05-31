@@ -49,8 +49,6 @@ exports.login = async (req, res) => {
   }
 };
 
-const crypto = require('crypto');
-
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
