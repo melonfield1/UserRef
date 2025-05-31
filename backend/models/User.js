@@ -17,6 +17,8 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+sessionToken: { type: String, default: null },
+
 // Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
