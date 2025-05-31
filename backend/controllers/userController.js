@@ -73,6 +73,24 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+exports.getUserBySession = async (req, res) => {
+  const { sessionToken } = req.query;
+
+  try {
+    const user = await User.findOne({ sessionToken });
+    if (!user) return res.status(401).json({ message: 'Invalid session' });
+
+    res.json({
+      userId: user._id,
+      email: user.email,
+      referralCode: user.referralCode,
+      successfulReferrals: user.successfulReferrals
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 exports.getDashboard = async (req, res) => {
   try {
